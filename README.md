@@ -10,6 +10,15 @@ other OSs is appreciated.
 Installing
 ---------------------
 
+### Simple install instructions:
+
+    git clone https://github.com/yosinski/GitResultsManager.git
+    cd GitResultsManager
+    python setup.py install
+    cp gitresman gitresmantimediff grmtd /usr/local/bin
+
+### In a bit more detail
+
 To install the python module, run:
 
     python setup.py install
