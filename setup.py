@@ -12,3 +12,4 @@ setup(name='Git Results Manager',
 
 
 print '''\nNote: you may still need to install other scripts.'''
+print '''Copy gitresman to your path.'''
