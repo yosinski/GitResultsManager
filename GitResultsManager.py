@@ -7,6 +7,7 @@ import stat
 import subprocess
 import datetime
 import time
+import pdb
 
 
 
@@ -131,32 +132,33 @@ class OutputLogger(object):
 
 
 
-def gitExecutable():
-    return 'git'
-
-
-
-def runCmd(args):
+def runCmd(args, supressErr = False):
     proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out,err = proc.communicate()
     code = proc.wait()
 
-    if code != 0:
+    if code != 0 and not supressErr:
         print out
         print err
         raise Exception('Got error from running command with args ' + repr(args))
 
-    return out, err
+    return code, out, err
+
+
+
+def gitWorks():
+    code,out,err = runCmd(('git','status'), supressErr = True)
+    return code == 0
 
 
 
 def gitLastCommit():
-    return runCmd(('git', 'rev-parse', '--short', 'HEAD'))[0].strip()
+    return runCmd(('git', 'rev-parse', '--short', 'HEAD'))[1].strip()
 
 
 
 def gitCurrentBranch():
-    out, err = runCmd(('git', 'branch'))
+    code, out, err = runCmd(('git', 'branch'))
     for line in out.split('\n'):
         if len(line) > 2 and line[0] == '*':
             return line[2:]
@@ -165,25 +167,25 @@ def gitCurrentBranch():
 
 
 def gitStatus():
-    return runCmd(('git', 'status'))[0].strip()
+    return runCmd(('git', 'status'))[1].strip()
 
 
 
 def gitDiff(color = False):
     if color:
-        return runCmd(('git', 'diff', '--color'))[0].strip()
+        return runCmd(('git', 'diff', '--color'))[1].strip()
     else:
-        return runCmd(('git', 'diff'))[0].strip()
+        return runCmd(('git', 'diff'))[1].strip()
 
 
 
 def hostname():
-    return runCmd('hostname')[0].strip()
+    return runCmd('hostname')[1].strip()
 
 
 
 def env():
-    return runCmd('env')[0].strip()
+    return runCmd('env')[1].strip()
 
 
 
@@ -218,7 +220,6 @@ class GitResultsManager(object):
             print 'grabbed time:', self.startWall
 
         else:
-            #pdb.set_trace()
             self._resultsSubdir = resultsSubdir
             if self._resultsSubdir is None:
                 self._resultsSubdir = RESULTS_SUBDIR
@@ -235,14 +236,24 @@ class GitResultsManager(object):
         if not dirExists:
             raise Exception('Please create the results directory "%s" first.' % self._resultsSubdir)
 
+        if ' ' in description:
+            raise Exception('Description must not contain any spaces, but it is "%s"' % description)
+
         if self._name is not None:
             self.finish()
         self.diary = diary
-        lastCommit = gitLastCommit()
-        curBranch = gitCurrentBranch()
-        timestamp = datetime.datetime.now().strftime('%y%m%d_%H%M%S')
 
-        basename = '%s_%s_%s' % (timestamp, lastCommit, curBranch)
+        # Test git
+        useGit = gitWorks()
+
+        timestamp = datetime.datetime.now().strftime('%y%m%d_%H%M%S')
+        if useGit:
+            lastCommit = gitLastCommit()
+            curBranch = gitCurrentBranch()
+            basename = '%s_%s_%s' % (timestamp, lastCommit, curBranch)
+        else:
+            basename = '%s' % timestamp
+
         if description:
             basename += '_%s' % description
         success = False
@@ -266,6 +277,7 @@ class GitResultsManager(object):
 
         # TODO: remove redundancy
         # print the command that was executed
+        print >>sys.stderr, 'WARNING: GitResultsManager running in GIT_DISABLED mode! (Is this a git repo?)'
         print '  Logging directory:', self.rundir
         print '        Command run:', ' '.join(sys.argv)
         print '           Hostname:', hostname()
@@ -274,20 +286,22 @@ class GitResultsManager(object):
             print '<diary not saved>'
             # just log these three lines
             with open(os.path.join(self.rundir, 'diary'), 'w') as ff:
+                print >>ff, 'WARNING: GitResultsManager running in GIT_DISABLED mode! (Is this a git repo?)'
                 print >>ff, '  Logging directory:', self.rundir
                 print >>ff, '        Command run:', ' '.join(sys.argv)
                 print >>ff, '           Hostname:', hostname()
                 print >>ff, '  Working directory:', os.getcwd()
                 print >>ff, '<diary not saved>'
 
-        with open(os.path.join(self.rundir, 'gitinfo'), 'w') as ff:
-            ff.write('%s %s\n' % (lastCommit, curBranch))
-        with open(os.path.join(self.rundir, 'gitstat'), 'w') as ff:
-            ff.write(gitStatus() + '\n')
-        with open(os.path.join(self.rundir, 'gitdiff'), 'w') as ff:
-            ff.write(gitDiff() + '\n')
-        with open(os.path.join(self.rundir, 'gitcolordiff'), 'w') as ff:
-            ff.write(gitDiff(color=True) + '\n')
+        if useGit:
+            with open(os.path.join(self.rundir, 'gitinfo'), 'w') as ff:
+                ff.write('%s %s\n' % (lastCommit, curBranch))
+            with open(os.path.join(self.rundir, 'gitstat'), 'w') as ff:
+                ff.write(gitStatus() + '\n')
+            with open(os.path.join(self.rundir, 'gitdiff'), 'w') as ff:
+                ff.write(gitDiff() + '\n')
+            with open(os.path.join(self.rundir, 'gitcolordiff'), 'w') as ff:
+                ff.write(gitDiff(color=True) + '\n')
         with open(os.path.join(self.rundir, 'env'), 'w') as ff:
             ff.write(env() + '\n')
 

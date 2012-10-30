@@ -1,8 +1,25 @@
 #! /usr/bin/env python
 
-from GitResultsManager import
+import sys
+from time import sleep
+from GitResultsManager import resman
+
+
 
 def main():
-    df
+    print 'This is not logged'
+
+    resman.start('demo-GRM-module-run')
+
+    for ii in range(3):
+        print 'This is logged', ii
+        print >>sys.stderr, 'This is logged (to stderr)', ii
+        sleep(1)
+
+    resman.stop()
+
+    print 'Run finished'
+
+
 
 main()
