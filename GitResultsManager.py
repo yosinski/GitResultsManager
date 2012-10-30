@@ -286,7 +286,7 @@ class GitResultsManager(object):
                 os.mkdir(os.path.join(self._resultsSubdir, name))
                 success = True
             except OSError:
-                print >>sys.stderr, name, 'already exists, appending suffix to name'
+                #print >>sys.stderr, name, 'already exists, appending suffix to name'
                 ii += 1
         self._name = name
 
