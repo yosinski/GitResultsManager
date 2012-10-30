@@ -493,14 +493,14 @@ def with_timeout(timeout, func, *args, **kwargs):
 
 
 
-class Process(object):
+class AsyncProcess(object):
     """Manager for an asynchronous process.
        The process will be run in the background, and its standard output
        and standard error will be collected asynchronously.
 
        Since the collection of output happens asynchronously (handled by
        threads), the process won't block even if it outputs large amounts
-       of data and you do not call Process.read*().
+       of data and you do not call AsyncProcess.read*().
 
        Similarly, it is possible to send data to the standard input of the
        process using the write() method, and the caller of write() won't
@@ -512,7 +512,7 @@ class Process(object):
        Parameters are identical to subprocess.Popen(), except that stdin,
        stdout and stderr default to subprocess.PIPE instead of to None.
        Note that if you set stdout or stderr to anything but PIPE, the
-       Process object won't collect that output, and the read*() methods
+       AsyncProcess object won't collect that output, and the read*() methods
        will always return empty strings.  Also, setting stdin to something
        other than PIPE will make the write() method raise an exception.
     """
@@ -588,7 +588,7 @@ class Process(object):
            will wait until the process dies.
 
            It is permitted to call wait() several times, even after it
-           has succeeded; the Process instance will remember the exit
+           has succeeded; the AsyncProcess instance will remember the exit
            status from the first successful call, and return that on
            subsequent calls.
         """
@@ -736,8 +736,8 @@ class Process(object):
 class ProcessManager(object):
     """Manager for asynchronous processes.
        This class is intended for use in a server that wants to expose the
-       asyncproc.Process API to clients.  Within a single process, it is
-       usually better to just keep track of the Process objects directly
+       asyncproc.AsyncProcess API to clients.  Within a single process, it is
+       usually better to just keep track of the AsyncProcess objects directly
        instead of hiding them behind this.  It probably shouldn't have been
        made part of the asyncproc module in the first place.
     """
@@ -752,7 +752,7 @@ class ProcessManager(object):
            integer is *not* the OS process id of the actuall running
            process.)
         """
-        proc = Process(args=args, executable=executable, shell=shell,
+        proc = AsyncProcess(args=args, executable=executable, shell=shell,
                        cwd=cwd, env=env)
         self.__last_id += 1
         self.__procs[self.__last_id] = proc
