@@ -561,8 +561,11 @@ class AsyncProcess(object):
             self._stderr_thread.start()
 
     def __del__(self, _killer=os.kill, _sigkill=signal.SIGKILL):
-        if self._exitstatus is None:
-            _killer(self.pid(), _sigkill)
+        if hasattr(self, '_process'):
+            if self._exitstatus is None:
+                _killer(self.pid(), _sigkill)
+        else:
+            print >>sys.stderr, 'Process object was never created. Maybe the program does not exist?'
 
     def pid(self):
         """Return the process id of the process.

@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 
+import os
 import sys
 import time
 from GitResultsManager import resman, AsyncProcess
@@ -15,11 +16,15 @@ def main():
     argsForCmd = sys.argv[2:]
 
     del sys.argv[0]
-    del sys.argv[1]
+    del sys.argv[0]
 
     resman.start(runName, diary = True)
-    
-    proc = AsyncProcess(argsForCmd)
+
+    environ = dict(os.environ)
+    environ['GIT_RESULTS_MANAGER_DIR'] = resman.rundir
+
+    proc = AsyncProcess(argsForCmd, env = environ)
+
     while True:
         item = proc.read()
         if item is None:

@@ -4,6 +4,7 @@
 # gitresman python demo-python.py
 
 import sys
+import os
 from time import sleep
 
 
@@ -15,7 +16,12 @@ def main():
         print 'This is logged', ii
         print >>sys.stderr, 'This is logged (to stderr)', ii
         sleep(1)
-    rundir = os.environ['GIT_RESULTS_MANAGER_DIR']
+    try:
+        rundir = os.environ['GIT_RESULTS_MANAGER_DIR']
+    except KeyError:
+        print >>sys.stderr, '\nEnvironment variable GIT_RESULTS_MANAGER_DIR is undfined. To demonstrate logging, run this instead as\n   gitresman junk ./demo-python.py'
+        sys.exit(1)
+
     with open(rundir + '/output_file_1.txt', 'w') as ff:
         ff.write('test output to file in results directory\n')
 
