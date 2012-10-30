@@ -1,0 +1,41 @@
+#! /usr/bin/env python
+
+import sys
+import time
+from GitResultsManager import resman, AsyncProcess
+
+
+
+def main():
+    if len(sys.argv) < 3:
+        print >>sys.stderr, 'Usage: %s run-name <command to run> <arg 1> <arg 2> ...' % sys.argv[0]
+        sys.exit(1)
+
+    runName = sys.argv[1]
+    argsForCmd = sys.argv[2:]
+
+    del sys.argv[0]
+    del sys.argv[1]
+
+    resman.start(runName, diary = True)
+    
+    proc = AsyncProcess(argsForCmd)
+    while True:
+        item = proc.read()
+        if item is None:
+            break
+        streamId,text = item[0]
+        if len(text) > 0 and text[-1] == '\n':
+            text = text[:-1]
+        if streamId == 1:
+            # Stdout
+            print text
+        else:
+            # Stderr
+            print >>sys.stderr, text
+    
+    resman.stop()
+
+
+
+main()
