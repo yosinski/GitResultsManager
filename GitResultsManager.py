@@ -299,7 +299,9 @@ class GitResultsManager(object):
 
         # TODO: remove redundancy
         # print the command that was executed
-        print >>sys.stderr, 'WARNING: GitResultsManager running in GIT_DISABLED mode! (Is this a git repo?)'
+        gitDisableWarning = 'WARNING: GitResultsManager running in GIT_DISABLED mode: no git information saved! (Is %s in a git repo?)' % os.getcwd()
+        if not useGit:
+            print >>sys.stderr, gitDisableWarning
         print '  Logging directory:', self.rundir
         print '        Command run:', ' '.join(sys.argv)
         print '           Hostname:', hostname()
@@ -308,7 +310,8 @@ class GitResultsManager(object):
             print '<diary not saved>'
             # just log these three lines
             with open(os.path.join(self.rundir, 'diary'), 'w') as ff:
-                print >>ff, 'WARNING: GitResultsManager running in GIT_DISABLED mode! (Is this a git repo?)'
+                if not useGit:
+                    print >>ff, gitDisableWarning
                 print >>ff, '  Logging directory:', self.rundir
                 print >>ff, '        Command run:', ' '.join(sys.argv)
                 print >>ff, '           Hostname:', hostname()
