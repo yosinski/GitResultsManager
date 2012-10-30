@@ -16,7 +16,6 @@
 #  GitResultsManager by by Jason Yosinski <jason@yosinski.com>
 #  Included asyncproc code by Thomas Bellman <bellman@lysator.liu.se>
 
-
 import os
 import sys
 import logging
@@ -27,6 +26,7 @@ import time
 import errno
 import signal
 import threading
+from threading import Semaphore
 import pdb
 
 __all__ = [ 'fmtSeconds', 'GitResultsManager', 'resman' ]
@@ -362,6 +362,61 @@ class GitResultsManager(object):
 
 # Instantiate a global GitResultsManager for others to use
 resman = GitResultsManager()
+
+
+
+class FinitePipe(object):
+    '''A pipe that holds a finite number of blocks of information.
+    By Jason Yosinski for CS 4410.
+    '''
+
+    class EOF(object):
+        pass
+
+    def __init__(self, pipeSize = 10):
+        self.mutex = Semaphore(1)           # mutex for internal state
+        self.contents = []                  # pipe buffer
+        self.closed = False                 # whether or not the pipe is closed
+        self.notFull = Semaphore(pipeSize)  # If this is acquired, it means the pipe is not full
+        self.notEmpty = Semaphore(0)        # If this is acquired, it means the pipe is not empty
+
+    def write(self, item):
+        '''Blocking write'''
+        if self.closed:
+            raise Exception('Write to a pipe that was already closed')
+
+        self.notFull.acquire()
+        self.mutex.acquire()
+        self.contents.append(item)
+        self.mutex.release()
+        self.notEmpty.release()
+
+    def read(self):
+        '''Blocking read'''
+        self.notEmpty.acquire()
+        self.mutex.acquire()
+        item = self.contents.pop(0)
+        if isinstance(item, self.EOF):
+            # put the EOF character back on the pipe for other read threads to find
+            self.contents.append(item)
+            self.notFull.release()
+            ret = None
+        else:
+            ret = [item]   # return in a list so that None (EOF) is different than [None] (someone wrote a None)
+        self.mutex.release()
+        self.notFull.release()
+        return ret
+
+    def close(self):
+        '''Close a pipe, after which:
+         - writes are errors
+         - reads succeed until the pipe is empty, at which point the pipe returns None (maybe like EOF??)
+         Internally, this is accomplished by enlarging the pipe size by 1 and adding the EOF character to the pipe.'''
+        self.mutex.acquire()
+        self.closed = True
+        self.contents.append(self.EOF())
+        self.notEmpty.release()  # we added a character, so release an extra time
+        self.mutex.release()
 
 
 
