@@ -399,7 +399,7 @@ class FinitePipe(object):
         if isinstance(item, self.EOF):
             # put the EOF character back on the pipe for other read threads to find
             self.contents.append(item)
-            self.notFull.release()
+            self.notEmpty.release()
             ret = None
         else:
             ret = [item]   # return in a list so that None (EOF) is different than [None] (someone wrote a None)
@@ -525,8 +525,11 @@ class AsyncProcess(object):
         if len(params) <= 5:
             kwparams.setdefault('stderr', subprocess.PIPE)
         self._pending_input = []
-        self._collected_outdata = []
-        self._collected_errdata = []
+        #self._collected_outdata = []
+        #self._collected_errdata = []
+        self._collected_outerr  = FinitePipe(10)    # collect both out and err together as tuples like (1, 'str...') or (2, 'str...')
+        self._collected_out_closed = False
+        self._collected_err_closed = False
         self._exitstatus = None
         self._lock = threading.Lock()
         self._inputsem = threading.Semaphore(0)
@@ -545,15 +548,15 @@ class AsyncProcess(object):
         if self._process.stdout:
             self._stdout_thread = threading.Thread(
                 name="stdout-thread",
-                target=self._reader, args=(self._collected_outdata,
-                                            self._process.stdout))
+                target=self._outreader, args=(self._collected_outerr,
+                                              self._process.stdout))
             self._stdout_thread.setDaemon(True)
             self._stdout_thread.start()
         if self._process.stderr:
             self._stderr_thread = threading.Thread(
                 name="stderr-thread",
-                target=self._reader, args=(self._collected_errdata,
-                                            self._process.stderr))
+                target=self._errreader, args=(self._collected_outerr,
+                                              self._process.stderr))
             self._stderr_thread.setDaemon(True)
             self._stderr_thread.start()
 
@@ -647,17 +650,32 @@ class AsyncProcess(object):
         self.kill(signal.SIGKILL)
         return self.wait()
 
-    def _reader(self, collector, source):
-        """Read data from source until EOF, adding it to collector.
+    def _outreader(self, collector, source):
+        """Read data from out source until EOF, adding it to collector.
         """
         while True:
             data = os.read(source.fileno(), 65536)
-            self._lock.acquire()
-            collector.append(data)
-            self._lock.release()
             if data == "":
                 source.close()
+                self._collected_out_closed = True
+                if self._collected_err_closed:
+                    collector.close() # Only close pipe once both out and err are closed
                 break
+            collector.write((1, data))
+        return
+
+    def _errreader(self, collector, source):
+        """Read data from err source until EOF, adding it to collector.
+        """
+        while True:
+            data = os.read(source.fileno(), 65536)
+            if data == "":
+                source.close()
+                self._collected_err_closed = True
+                if self._collected_out_closed:
+                    collector.close() # Only close pipe once both out and err are closed
+                break
+            collector.write((2, data))
         return
 
     def _feeder(self, pending, drain):
@@ -675,15 +693,13 @@ class AsyncProcess(object):
             drain.write(data)
 
     def read(self):
-        """Read data written by the process to its standard output.
+        """Blocking read of data written by the process to stdout or stderr.
+        JBY: changed to blocking.
         """
-        self._lock.acquire()
-        outdata = "".join(self._collected_outdata)
-        del self._collected_outdata[:]
-        self._lock.release()
-        return outdata
+        item = self._collected_outerr.read()
+        return item
 
-    def readerr(self):
+    def readerrDEPRECATED(self):
         """Read data written by the process to its standard error.
         """
         self._lock.acquire()
@@ -692,7 +708,7 @@ class AsyncProcess(object):
         self._lock.release()
         return errdata
 
-    def readboth(self):
+    def readbothDEPRECATED(self):
         """Read data written by the process to its standard output and error.
            Return value is a two-tuple ( stdout-data, stderr-data ).
 
