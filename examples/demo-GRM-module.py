@@ -15,6 +15,8 @@ def main():
         print 'This is logged', ii
         print >>sys.stderr, 'This is logged (to stderr)', ii
         sleep(1)
+    with open(resman.rundir + '/output_file_1.txt', 'w') as ff:
+        ff.write('test output to file in results directory\n')
 
     resman.stop()
 
