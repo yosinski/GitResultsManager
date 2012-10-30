@@ -21,7 +21,7 @@ def main():
     try:
         rundir = os.environ['GIT_RESULTS_MANAGER_DIR']
     except KeyError:
-        print >>sys.stderr, '\nEnvironment variable GIT_RESULTS_MANAGER_DIR is undfined. To demonstrate logging, run this instead as\n   gitresman junk ./demo-python.py'
+        print >>sys.stderr, '\nEnvironment variable GIT_RESULTS_MANAGER_DIR is undefined. To demonstrate logging, run this instead as\n   gitresman junk ./demo-python.py'
         sys.exit(1)
 
     with open(rundir + '/output_file_1.txt', 'w') as ff:
