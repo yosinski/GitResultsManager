@@ -15,7 +15,7 @@ Installing
     git clone https://github.com/yosinski/GitResultsManager.git && \
     cd GitResultsManager && \
     python setup.py install && \
-    cp gitresman gitresmantimediff grmtd /usr/local/bin
+    cp gitresman gitresmantimediff grmtd git-recreate /usr/local/bin
 
 Replace /usr/local/bin with another location on your path, if desired.
 
