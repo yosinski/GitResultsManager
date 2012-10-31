@@ -10,26 +10,14 @@ other OSs is appreciated.
 Installing
 ---------------------
 
-### Simple install instructions:
+### One line install:
 
-    git clone https://github.com/yosinski/GitResultsManager.git
-    cd GitResultsManager
-    python setup.py install
+    git clone https://github.com/yosinski/GitResultsManager.git && \
+    cd GitResultsManager && \
+    python setup.py install && \
     cp gitresman gitresmantimediff grmtd /usr/local/bin
 
-### In a bit more detail
-
-To install the python module, run:
-
-    python setup.py install
-
-To install the main `gitresman` script, just copy it somewhere in your path:
-
-    cp gitresman /somewhere/in/your/path
-
-If desired, install the `gitresmantimediff` and `grmtd` diary viewing helper scripts as well
-
-    cp gitresmantimediff grmtd /somewhere/in/your/path
+Replace /usr/local/bin with another location on your path, if desired.
 
 
 
