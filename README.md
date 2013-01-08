@@ -2,7 +2,7 @@ GitResultsManager
 =====================
 
 Note: GitResultsManager does not profess to be remotely operable on
-any operating system other than Linux and Mac. Evidence of success on
+any operating system besides Linux and Mac. Evidence of success on
 other OSs is appreciated.
 
 
@@ -15,7 +15,7 @@ Installing
     git clone https://github.com/yosinski/GitResultsManager.git && \
     cd GitResultsManager && \
     sudo python setup.py install && \
-    sudo cp gitresman gitresmantimediff grmtd git-recreate /usr/local/bin
+    sudo cp gitresman gitresmantimediff grmtd git-recreate /usr/local/bin/
 
 Replace /usr/local/bin with another location on your path, if desired.
 
@@ -51,7 +51,7 @@ Output:
 
 Notice that it complains it cannot find the GIT_RESULTS_MANAGER_DIR
 environment variable. This is how the program knows it is not being
-run from within `gitresman`. Now, running it within `gitresman`:
+run from within `gitresman`. Now, try using `gitresman` to run it:
 
     gitresman run-name ./demo-c
 
@@ -76,11 +76,11 @@ Notice how `gitresman` adds a few lines of information to the beginning and endi
 
     WARNING: GitResultsManager running in GIT_DISABLED mode: no git information saved! (Is /Users/jason/temp/examples in a git repo?)
 
-Warning because we aren't running from within a git repoitory, removing most of the usefulness of GitResultsManager.
+Warning because we aren't running from within a git repository, removing most of the usefulness of GitResultsManager.
 
       Logging directory: results/121030_183101_run-name
 
-The directory that was created for this run, in the format <datestamp>_<timestamp>_<name of run>
+The directory that was created for this run, in the format `<datestamp>_<timestamp>_<name of run>`
 
             Command run: ./demo-c
 
@@ -88,20 +88,25 @@ Which command you actually ran.
 
                Hostname: lapaz
 
-The host this run was performed on (useful when running on clusters)
+The host this run was performed on (useful when running on clusters or
+multiple machines with non-identical configurations)
 
       Working directory: /Users/jason/temp/examples
 
-The working directory. Next follows the acutual output of the program, and then at the end...
+The working directory. Next follows the actual output of the program, and then at the end...
 
            Wall time:  0.024
       Processor time:  0.012
 
 `gitresman` notes how long the program took to execute in wall time and processor time.
 
+### Example of using the `GitResultsManager` class within Python.
+
+See `examples/demo-GRM-module.py`.
 
 
-Developement task list
+
+Development task list
 ----------------------
 
 ### To do
