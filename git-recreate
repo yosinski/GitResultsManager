@@ -27,8 +27,12 @@ if [ "$curbranch" = "(no branch)" ]; then
     curbranch=`git rev-parse --short HEAD`
 fi
 
-rev=`cat $dir/gitinfo | gawk '{print $1}'` \
-    && git checkout $rev
+if [ ! -f "$dir/gitinfo" ]; then
+    echo "$dir/gitinfo does not exist, are you sure the path is correct?"
+    exit 1
+fi
+rev=`cat $dir/gitinfo | gawk '{print $1}'`
+git checkout $rev
 if [ `cat $dir/gitdiff | wc -l` -gt 1 ]; then
     git apply $dir/gitdiff 
 fi
