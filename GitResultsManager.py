@@ -183,7 +183,10 @@ def gitCurrentBranch():
     code, out, err = runCmd(('git', 'branch'))
     for line in out.split('\n'):
         if len(line) > 2 and line[0] == '*':
-            return line[2:]
+            ret = line[2:]
+            if ret == '(no branch)':
+                ret = 'NO-BRANCH'
+            return ret
     raise Exception('Error getting current branch from git stdout/stderr %s, %s.' % (repr(out), repr(err)))
 
 
