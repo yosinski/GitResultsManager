@@ -265,8 +265,7 @@ class GitResultsManager(object):
             raise Exception('Description must not contain any spaces, but it is "%s"' % description)
 
         if self._name is not None:
-            # TODO: fix this next line. should be finishCapture(), maybe?
-            self.finish()
+            self.stop()
         self.diary = diary
 
         # Test git
