@@ -3,6 +3,7 @@
 from distutils.core import setup
 
 setup(name='Git Results Manager',
+      description='Python module and scripts for keeping track of research results using Git.',
       version='0.1',
       url='https://github.com/yosinski/GitResultsManager',
       author='Jason Yosinski',
