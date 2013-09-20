@@ -2,8 +2,6 @@
 
 import os
 import sys
-import time
-import fcntl
 import select
 import signal
 import argparse
