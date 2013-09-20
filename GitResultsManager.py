@@ -26,6 +26,7 @@ import time
 import errno
 import signal
 import threading
+import fcntl
 from threading import Semaphore
 import pdb
 
@@ -48,6 +49,22 @@ def fmtSeconds(sec):
         return sign + '%d' % int(seconds) + ('%.3f' % (seconds-int(seconds)))[1:]
 
 
+
+# JBY: some copied from http://stackoverflow.com/questions/7729336/how-can-i-print-and-display-subprocess-stdout-and-stderr-output-without-distorti/7730201#7730201
+
+# Helper function to add the O_NONBLOCK flag to a file descriptor
+def makeAsync(fd):
+    fcntl.fcntl(fd, fcntl.F_SETFL, fcntl.fcntl(fd, fcntl.F_GETFL) | os.O_NONBLOCK)
+
+# Helper function to read some data from a file descriptor, ignoring EAGAIN errors
+def readAsync(fd):
+    try:
+        return fd.read()
+    except IOError, err:
+        if err.errno != errno.EAGAIN:
+            raise err
+        else:
+            return ''
 
 class OutstreamHandler(object):
     def __init__(self, writeHandler, flushHandler):
@@ -251,15 +268,19 @@ class GitResultsManager(object):
             self._name = None
             self._outLogger = None
             self.diary = None
-        
-    def start(self, description = '', diary = True):
+
+    def start(self, description = '', diary = True, createResultsDirIfMissing = False):
+        self.diary = diary
         dirExists = False
         try:
             dirExists = stat.S_ISDIR(os.stat(self._resultsSubdir).st_mode)
         except OSError:
             pass
         if not dirExists:
-            raise Exception('Please create the results directory "%s" first.' % self._resultsSubdir)
+            if createResultsDirIfMissing:
+                os.mkdir(self._resultsSubdir)
+            else:
+                raise Exception('Please create the results directory "%s" first.' % self._resultsSubdir)
 
         if ' ' in description:
             raise Exception('Description must not contain any spaces, but it is "%s"' % description)
@@ -333,7 +354,7 @@ class GitResultsManager(object):
         with open(os.path.join(self.rundir, 'env'), 'w') as ff:
             ff.write(env() + '\n')
 
-    def stop(self):
+    def stop(self, procTime = True):
         if self._resumeExistingRun:
             procTimeSec = '<unknown, not managed by GitResultsManager>'
         else:
@@ -342,10 +363,12 @@ class GitResultsManager(object):
             # just log these couple lines before resetting our name
             with open(os.path.join(self.rundir, 'diary'), 'a') as ff:
                 print >>ff, '       Wall time: ', fmtSeconds(time.time() - self.startWall)
-                print >>ff, '  Processor time: ', procTimeSec
+                if procTime:
+                    print >>ff, '  Processor time: ', procTimeSec
         self._name = None
         print '       Wall time: ', fmtSeconds(time.time() - self.startWall)
-        print '  Processor time: ', procTimeSec
+        if procTime:
+            print '  Processor time: ', procTimeSec
         if self.diary:
             self._outLogger.finishCapture()
             self._outLogger = None
