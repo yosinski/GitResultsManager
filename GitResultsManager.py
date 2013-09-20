@@ -30,7 +30,7 @@ import fcntl
 from threading import Semaphore
 import pdb
 
-__all__ = [ 'fmtSeconds', 'GitResultsManager', 'resman' ]
+__all__ = [ 'GitResultsManager', 'resman' ]
 
 
 
