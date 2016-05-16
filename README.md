@@ -10,14 +10,14 @@ other OSs is appreciated.
 Installing
 ---------------------
 
-### One line install:
+### One line global install:
 
     git clone https://github.com/yosinski/GitResultsManager.git && \
     cd GitResultsManager && \
     sudo python setup.py install && \
     sudo cp resman resman-td git-recreate /usr/local/bin/
 
-Replace /usr/local/bin with another location on your path, if desired.
+Replace /usr/local/bin with another location on your path, if desired. If installing the Python packages in youe home directory (perhaps using virtualenv), you should skip the first `sudo`, and if installing scripts in your home directory, skip the second.
 
 
 
