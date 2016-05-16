@@ -17,7 +17,7 @@ Installing
     sudo python setup.py install && \
     sudo cp resman resman-td git-recreate /usr/local/bin/
 
-Replace /usr/local/bin with another location on your path, if desired. If installing the Python packages in youe home directory (perhaps using virtualenv), you should skip the first `sudo`, and if installing scripts in your home directory, skip the second.
+Replace `/usr/local/bin` with another location on your path, if desired. If installing the Python packages in your home directory (perhaps using virtualenv), you should omit the first `sudo`, and if installing scripts in your home directory, skip the second.
 
 
 
@@ -26,7 +26,7 @@ Usage
 
 GitResultsManager may be used in two ways:
 
-1. Using the `resman` wrapper script to run programs in any language, or
+1. **(recommended)** Using the `resman` wrapper script to run programs in any language, or
 2. From within Python as a Python module.
 
 (1) is more general, while (2) offers more control. The following examples are available in the `examples` directory.
