@@ -132,7 +132,7 @@ Development task list
 
 ### To do
 
-1. Add settings override in ~/.config/gitresultsmanager_config.py
+1. Add settings override via `~/.config/gitresultsmanager_config.py` or similar
 1. Documentation
 
-Want to help? Fork and submit a pull request!
+Want to help? Pull requests are welcome!
