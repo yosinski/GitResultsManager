@@ -201,7 +201,7 @@ def gitCurrentBranch():
     for line in out.split('\n'):
         if len(line) > 2 and line[0] == '*':
             ret = line[2:]
-            if ret == '(no branch)':
+            if ret == '(no branch)' or '(HEAD detached at' in ret:
                 ret = 'NO-BRANCH'
             return ret
     raise Exception('Error getting current branch from git stdout/stderr %s, %s.' % (repr(out), repr(err)))
