@@ -221,6 +221,17 @@ def gitDiff(color = False):
 
 
 
+def pipWorks():
+    code,out,err = runCmd(('pip','help'), supressErr = True)
+    return code == 0
+
+
+
+def pipFreeze():
+    return runCmd(('pip', 'freeze'))[1].strip()
+
+
+
 def hostname():
     return runCmd('hostname')[1].strip()
 
@@ -291,6 +302,8 @@ class GitResultsManager(object):
 
         # Test git
         useGit = gitWorks()
+        # Test pip
+        usePip = pipWorks()
 
         timestamp = datetime.datetime.now().strftime('%y%m%d_%H%M%S')
         if useGit:
@@ -351,6 +364,9 @@ class GitResultsManager(object):
                 ff.write(gitDiff() + '\n')
             with open(os.path.join(self.rundir, 'gitcolordiff'), 'w') as ff:
                 ff.write(gitDiff(color=True) + '\n')
+        if usePip:
+            with open(os.path.join(self.rundir, 'requirements.txt'), 'w') as ff:
+                ff.write(pipFreeze() + '\n')
         with open(os.path.join(self.rundir, 'env'), 'w') as ff:
             ff.write(env() + '\n')
 
