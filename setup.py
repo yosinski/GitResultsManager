@@ -2,27 +2,18 @@
 
 from distutils.core import setup
 
-with open('README') as ff:
+with open('README.md') as ff:
     long_description = ff.read()
 url='https://github.com/yosinski/GitResultsManager'
 
 setup(name='GitResultsManager',
       description='The GitResultsManager Python module and scripts (resman) for keeping track of research results using Git.',
       long_description=long_description,
-      version='0.2',
+      version='0.3',
       url=url,
       author='Jason Yosinski',
       author_email='git_results_manager.jyo@0sg.net',
-      py_modules=['GitResultsManager'],
-      )
-
-
-print
-print '*' * 70
-print '''*  Note: GitResultsManager comes with several very useful scripts'''
-print '''*  (resman, resman-td, git-recreate) which are not installed by'''
-print '''*    pip install GitResultsManager'''
-print '''*  To install these scripts, simply run the one line command from:'''
-print '''*    %s''' % url
-print '*' * 70
-print
+      packages=['GitResultsManager'],
+      license='LICENSE.txt',
+      scripts=['bin/git-recreate', 'bin/grmtd', 'bin/resman', 'bin/resman-td'],
+)
