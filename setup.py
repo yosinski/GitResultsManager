@@ -15,5 +15,5 @@ setup(name='GitResultsManager',
       author_email='git_results_manager.jyo@0sg.net',
       packages=['GitResultsManager'],
       license='LICENSE.txt',
-      scripts=['bin/git-recreate', 'bin/grmtd', 'bin/resman', 'bin/resman-td'],
+      scripts=['bin/git-recreate', 'bin/rmtd', 'bin/resman', 'bin/resman-td'],
 )
