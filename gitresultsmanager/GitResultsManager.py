@@ -339,7 +339,7 @@ class GitResultsManager(object):
         if not useGit:
             print >>sys.stderr, gitDisableWarning
         print '  Logging directory:', self.rundir
-        print '        Command run:', ' '.join(sys.argv)
+        print ' Raw entire command:', ' '.join(sys.argv)
         print '           Hostname:', hostname()
         print '  Working directory:', os.getcwd()
         if not self.diary:
@@ -349,7 +349,7 @@ class GitResultsManager(object):
                 if not useGit:
                     print >>ff, gitDisableWarning
                 print >>ff, '  Logging directory:', self.rundir
-                print >>ff, '        Command run:', ' '.join(sys.argv)
+                print >>ff, ' Raw entire command:', ' '.join(sys.argv)
                 print >>ff, '           Hostname:', hostname()
                 print >>ff, '  Working directory:', os.getcwd()
                 print >>ff, '<diary not saved>'
@@ -369,7 +369,7 @@ class GitResultsManager(object):
         with open(os.path.join(self.rundir, 'env'), 'w') as ff:
             ff.write(env() + '\n')
 
-    def stop(self, procTime = True):
+    def stop(self, procTime=True):
         if self._resumeExistingRun:
             procTimeSec = '<unknown, not managed by GitResultsManager>'
         else:
