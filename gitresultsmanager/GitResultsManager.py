@@ -28,9 +28,8 @@ import signal
 import threading
 import fcntl
 from threading import Semaphore
-import pdb
 
-__all__ = [ 'GitResultsManager', 'resman' ]
+__all__ = ['GitResultsManager', 'resman']
 
 
 
@@ -87,7 +86,7 @@ class OutputLogger(object):
         EMPTY  = 0
         STDOUT = 1
         STDERR = 2
-            
+
     def __init__(self, filename):
         self.stdout = sys.stdout
         self.stderr = sys.stderr
@@ -125,22 +124,22 @@ class OutputLogger(object):
 
     def handleWriteOut(self, message):
         self.write(message, self.BState.STDOUT)
-        
+
     def handleWriteErr(self, message):
         self.write(message, self.BState.STDERR)
 
     def handleFlushOut(self):
         self.flush()
-        
+
     def handleFlushErr(self):
         self.flush()
-        
+
     def write(self, message, destination):
         if destination == self.BState.STDOUT:
             self.stdout.write(message)
         else:
             self.stderr.write(message)
-        
+
         if destination == self.bufferState or self.bufferState == self.BState.EMPTY:
             self.buffer += message
             self.bufferState = destination
@@ -171,7 +170,7 @@ class OutputLogger(object):
 
 
 
-def runCmd(args, supressErr = False):
+def runCmd(args, supressErr=False):
     proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out,err = proc.communicate()
     code = proc.wait()
@@ -186,7 +185,7 @@ def runCmd(args, supressErr = False):
 
 
 def gitWorks():
-    code,out,err = runCmd(('git','status'), supressErr = True)
+    code,out,err = runCmd(('git','status'), supressErr=True)
     return code == 0
 
 
@@ -213,7 +212,7 @@ def gitStatus():
 
 
 
-def gitDiff(color = False):
+def gitDiff(color=False):
     if color:
         return runCmd(('git', 'diff', '--color'))[1].strip()
     else:
@@ -222,7 +221,7 @@ def gitDiff(color = False):
 
 
 def pipWorks():
-    code,out,err = runCmd(('pip','help'), supressErr = True)
+    code,out,err = runCmd(('pip','help'), supressErr=True)
     return code == 0
 
 
@@ -249,7 +248,7 @@ class GitResultsManager(object):
     resumeExistingRun, load info from that run, usually just so the
     run can be finished and the diary properly terminated.'''
 
-    def __init__(self, resultsSubdir = None, resumeExistingRun = None):
+    def __init__(self, resultsSubdir=None, resumeExistingRun=None):
         self._resumeExistingRun = resumeExistingRun
         if self._resumeExistingRun:
             # if user provided a directory to load in.
@@ -280,7 +279,7 @@ class GitResultsManager(object):
             self._outLogger = None
             self.diary = None
 
-    def start(self, description = '', diary = True, createResultsDirIfMissing = False):
+    def start(self, description='', diary=True, createResultsDirIfMissing=False):
         self.diary = diary
         dirExists = False
         try:
@@ -404,10 +403,8 @@ class GitResultsManager(object):
         return self._name
 
 
-
 # Instantiate a global GitResultsManager for others to use
 resman = GitResultsManager()
-
 
 
 class FinitePipe(object):
@@ -418,7 +415,7 @@ class FinitePipe(object):
     class EOF(object):
         pass
 
-    def __init__(self, pipeSize = 10):
+    def __init__(self, pipeSize=10):
         self.mutex = Semaphore(1)           # mutex for internal state
         self.contents = []                  # pipe buffer
         self.closed = False                 # whether or not the pipe is closed
@@ -587,7 +584,7 @@ class AsyncProcess(object):
             self._stdin_thread = threading.Thread(
                 name="stdin-thread",
                 target=self._feeder, args=(self._pending_input,
-                                            self._process.stdin))
+                                           self._process.stdin))
             self._stdin_thread.setDaemon(True)
             self._stdin_thread.start()
         if self._process.stdout:
@@ -721,7 +718,7 @@ class AsyncProcess(object):
                 source.close()
                 self._collected_err_closed = True
                 if self._collected_out_closed:
-                    collector.close() # Only close pipe once both out and err are closed
+                    collector.close()  # Only close pipe once both out and err are closed
                 break
             collector.write((2, data))
         return
@@ -732,7 +729,7 @@ class AsyncProcess(object):
         while True:
             self._inputsem.acquire()
             self._lock.acquire()
-            if not pending  and         self._quit:
+            if not pending and self._quit:
                 drain.close()
                 self._lock.release()
                 break
@@ -817,7 +814,7 @@ class ProcessManager(object):
            process.)
         """
         proc = AsyncProcess(args=args, executable=executable, shell=shell,
-                       cwd=cwd, env=env)
+                            cwd=cwd, env=env)
         self.__last_id += 1
         self.__procs[self.__last_id] = proc
         return self.__last_id
