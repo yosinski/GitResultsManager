@@ -294,6 +294,8 @@ class GitResultsManager(object):
 
         if ' ' in description:
             raise Exception('Description must not contain any spaces, but it is "%s"' % description)
+        if '/' in description:
+            raise Exception('Description must not contain any "/" characters, but it is "%s"' % description)
 
         if self._name is not None:
             self.stop()
@@ -324,6 +326,8 @@ class GitResultsManager(object):
             except OSError:
                 #print >>sys.stderr, name, 'already exists, appending suffix to name'
                 ii += 1
+                if ii > 500:
+                    raise
         self._name = name
 
         if self.diary:
