@@ -9,7 +9,7 @@ import signal
 import argparse
 import subprocess
 from GitResultsManager import GitResultsManager, makeAsync, readAsync
-
+import ipdb as pdb
 
 
 def main():
@@ -38,6 +38,9 @@ def main():
         
     os.environ['GIT_RESULTS_MANAGER_DIR'] = gitresman.rundir
     print()
+    # JBY: using universal_newlines=True in py3 proved not to work directly because of this bug or change:
+    #  https://bugs.python.org/issue35762
+    #proc = subprocess.Popen(args.command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
     proc = subprocess.Popen(args.command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     makeAsync(proc.stdout)
@@ -56,12 +59,13 @@ def main():
         stderrBlob = readAsync(proc.stderr)
 
         if stdoutBlob:
-            print(stdoutBlob, end=' ')
+            print(stdoutBlob, end='')
         if stderrBlob:
-            print(stderrBlob, end=' ', file=sys.stderr)
+            print(stderrBlob, end='', file=sys.stderr)
 
         exitCode = proc.poll()
         if exitCode != None:
+            # TODO: read last stdout/stderr here? Ok to use blocking read?
             break
 
     print()

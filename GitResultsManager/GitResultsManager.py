@@ -58,9 +58,13 @@ def makeAsync(fd):
     fcntl.fcntl(fd, fcntl.F_SETFL, fcntl.fcntl(fd, fcntl.F_GETFL) | os.O_NONBLOCK)
 
 # Helper function to read some data from a file descriptor, ignoring EAGAIN errors
-def readAsync(fd):
+# Python 3 fd's may return bytes instead of str; in this case decode=True may be useful to make readAsync return a str in either case.
+def readAsync(fd, decode=True):
     try:
-        return fd.read()
+        dat = fd.read()
+        if decode and isinstance(dat, bytes):
+            dat = dat.decode()
+        return dat
     except IOError as err:
         if err.errno != errno.EAGAIN:
             raise err

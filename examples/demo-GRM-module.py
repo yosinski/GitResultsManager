@@ -1,5 +1,7 @@
 #! /usr/bin/env python
 
+from __future__ import print_function
+
 import sys
 from time import sleep
 from GitResultsManager import resman
