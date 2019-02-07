@@ -6,7 +6,7 @@ import random
 import sys
 
 def snoozer():
-    print 'This program sleeps for deterministic durations, periodically waking up to print the approximate time. Runs until reaching its time limit (3 seconds by default).'
+    print('This program sleeps for deterministic durations, periodically waking up to print the approximate time. Runs until reaching its time limit (3 seconds by default).')
     
     if len(sys.argv) > 1:
         maxTime = float(sys.argv[1])
@@ -17,7 +17,7 @@ def snoozer():
     while True:
         sleep(.3)
         time += .3
-        print time
+        print(time)
         sys.stdout.flush()
         if time > maxTime:
             break
