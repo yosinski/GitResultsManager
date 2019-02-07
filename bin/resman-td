@@ -5,7 +5,7 @@ Compute time difference between two lines of resman output. See usage.
 '''
 
 import traceback
-import sys, pdb
+import sys
 import argparse
 from datetime import datetime
 

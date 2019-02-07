@@ -9,7 +9,6 @@ import signal
 import argparse
 import subprocess
 from GitResultsManager import GitResultsManager, makeAsync, readAsync
-import ipdb as pdb
 
 
 def main():
