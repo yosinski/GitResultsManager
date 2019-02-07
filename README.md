@@ -53,7 +53,7 @@ Notice that it complains it cannot find the GIT_RESULTS_MANAGER_DIR
 environment variable. This is how the program knows it is not being
 run from within `resman`. Now, try using `resman` to run it:
 
-    resman run-name ./demo-c
+    resman -r run-name ./demo-c
 
 Output:
 

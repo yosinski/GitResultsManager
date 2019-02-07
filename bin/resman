@@ -1,5 +1,7 @@
 #! /usr/bin/env python
 
+from __future__ import print_function
+
 import os
 import sys
 import select
@@ -30,12 +32,12 @@ def main():
                     diary=not args.nodiary,
                     createResultsDirIfMissing=not args.nomkdir)
 
-    print ' Raw script command:', ' '.join(args.command)
+    print(' Raw script command:', ' '.join(args.command))
     args.command = [item.replace('GIT_RESULTS_MANAGER_DIR', gitresman.rundir) for item in args.command]
-    print '     Script command:', ' '.join(args.command)
+    print('     Script command:', ' '.join(args.command))
         
     os.environ['GIT_RESULTS_MANAGER_DIR'] = gitresman.rundir
-    print
+    print()
     proc = subprocess.Popen(args.command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     makeAsync(proc.stdout)
@@ -54,16 +56,16 @@ def main():
         stderrBlob = readAsync(proc.stderr)
 
         if stdoutBlob:
-            print stdoutBlob,
+            print(stdoutBlob, end=' ')
         if stderrBlob:
-            print >>sys.stderr, stderrBlob,
+            print(stderrBlob, end=' ', file=sys.stderr)
 
         exitCode = proc.poll()
         if exitCode != None:
             break
 
-    print
-    print '       Exit code: ', exitCode
+    print()
+    print('       Exit code: ', exitCode)
     
     gitresman.stop(procTime = False)
 
