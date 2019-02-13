@@ -13,20 +13,20 @@ from GitResultsManager import GitResultsManager, makeAsync, readAsync
 
 def main():
     parser = argparse.ArgumentParser(description='resman is a wrapper script to log output from a given command and capture useful git status. For more information, see https://github.com/yosinski/GitResultsManager . Note: if you are trying to use resman to run commands with options, like "resman -r test1 mycommand --foo --bar", separate your command and options from resman by inserting -- like so: "resman -r test1 -- command --foo --bar".')
-    parser.add_argument('--runname', '-r', type = str, default = 'junk',
-                        help = 'Name for GitResultsManager results directory (default: junk)')
-    parser.add_argument('--dirname', '-d', type = str, default = 'results',
-                        help = 'Directory in which to create timestamped results directories (default: results)')
+    parser.add_argument('--runname', '-r', type=str, default='junk',
+                        help='Name for GitResultsManager results directory (default: junk)')
+    parser.add_argument('--dirname', '-d', type=str, default='results',
+                        help='Directory in which to create timestamped results directories (default: results)')
     parser.add_argument('--nodiary', '-n', action='store_true',
-                        help = 'Disable diary (default: diary is on)')
+                        help='Disable diary (default: diary is on)')
     parser.add_argument('--nomkdir', action='store_true',
-                        help = 'If the "results" directory (or the name specified by --dirname) does not exist, resman will create it unless the --nomkdir option is selected. With this option, resman wil instead raise an exception if the "results" directory is missing (default: off)')
-    parser.add_argument('command', type = str, nargs='+',
-                        help = 'Command to run and all associated args')
+                        help='If the "results" directory (or the name specified by --dirname) does not exist, resman will create it unless the --nomkdir option is selected. With this option, resman wil instead raise an exception if the "results" directory is missing (default: off)')
+    parser.add_argument('command', type=str, nargs='+',
+                        help='Command to run and all associated args')
 
     args = parser.parse_args()
 
-    gitresman = GitResultsManager(resultsSubdir = args.dirname)
+    gitresman = GitResultsManager(resultsSubdir=args.dirname)
     gitresman.start(args.runname,
                     diary=not args.nodiary,
                     createResultsDirIfMissing=not args.nomkdir)
@@ -70,7 +70,7 @@ def main():
     print()
     print('       Exit code: ', exitCode)
     
-    gitresman.stop(procTime = False)
+    gitresman.stop(procTime=False)
 
 
 
