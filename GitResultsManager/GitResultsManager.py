@@ -285,7 +285,7 @@ class GitResultsManager(object):
             self._outLogger = None
             self.diary = None
 
-    def start(self, description='', diary=True, createResultsDirIfMissing=False):
+    def start(self, template, description='junk', diary=True, createResultsDirIfMissing=False):
         self.diary = diary
         dirExists = False
         try:
@@ -312,16 +312,21 @@ class GitResultsManager(object):
         # Test pip
         usePip = pipWorks()
 
-        timestamp = datetime.datetime.now().strftime('%y%m%d_%H%M%S')
-        if useGit:
-            lastCommit = gitLastCommit()
-            curBranch = gitCurrentBranch()
-            basename = '%s_%s_%s' % (timestamp, lastCommit, curBranch)
-        else:
-            basename = '%s' % timestamp
+        now = datetime.datetime.now()
+        datestamp = now.strftime('%y%m%d')
+        timestamp = now.strftime('%H%M%S')
+        datetimestamp = '%s_%s' % (datestamp, timestamp)
+        lastCommit = gitLastCommit() if useGit else 'nogithash'
+        curBranch = gitCurrentBranch() if useGit else 'nogitbranch'
 
-        if description:
-            basename += '_%s' % description
+        format_dict = dict(date=datestamp,
+                           time=timestamp,
+                           dt=datetimestamp,
+                           githash=lastCommit,
+                           gitbranch=curBranch,
+                           runname=description)
+        basename = template.format(**format_dict)
+            
         success = False
         ii = 0
         while not success:
