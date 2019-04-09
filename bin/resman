@@ -78,6 +78,8 @@ def main():
 
     gitresman.stop(procTime=False)
 
+    sys.exit(exitCode)
+
 
 
 main()
