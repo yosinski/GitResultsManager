@@ -16,7 +16,7 @@ def main(diaryFile=None, quiet=False):
         instream = open(diaryFile, 'r')
     else:
         if not quiet:
-            print 'No file given, reading from stdin.'
+            print('No file given, reading from stdin.')
         instream = sys.stdin
     
     for ii, line in enumerate(instream):
@@ -30,8 +30,8 @@ def main(diaryFile=None, quiet=False):
             ints[-1] *= 1000   # Convert milliseconds to microseconds
             thisDT = datetime(*ints)
         except Exception as ee:
-            print traceback.format_exc()
-            print 'Error with line %d: "%s"' % (ii, line[:-1] if line[-1] == '\n' else line)
+            print(traceback.format_exc())
+            print('Error with line %d: "%s"' % (ii, line[:-1] if line[-1] == '\n' else line))
             sys.exit(1)
                                
         if ii == 0:
@@ -42,7 +42,7 @@ def main(diaryFile=None, quiet=False):
             rest = rest[:-1]
 
         deltaSecondsString = '+' + '%.03f' % deltaSeconds if ii > 0 else ''
-        print '%9s   %s   %s' % (deltaSecondsString, timestamp, rest)
+        print('%9s   %s   %s' % (deltaSecondsString, timestamp, rest))
 
         lastDT = thisDT
 

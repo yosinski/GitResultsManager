@@ -346,7 +346,7 @@ class GitResultsManager(object):
             self._outLogger.startCapture()
 
         self.startWall = time.time()
-        self.startProc = time.clock()
+        self.startProc = time.process_time()
 
         # TODO: remove redundancy
         # print the command that was executed
@@ -388,7 +388,7 @@ class GitResultsManager(object):
         if self._resumeExistingRun:
             procTimeSec = '<unknown, not managed by GitResultsManager>'
         else:
-            procTimeSec = fmtSeconds(time.clock() - self.startProc)
+            procTimeSec = fmtSeconds(time.process_time() - self.startProc)
         if not self.diary:
             # just log these couple lines before resetting our name
             with open(os.path.join(self.rundir, 'diary'), 'a') as ff:
