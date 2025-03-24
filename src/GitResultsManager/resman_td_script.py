@@ -10,12 +10,20 @@ import argparse
 from datetime import datetime
 
 
-
 def main(diaryFile=None, quiet=False):
-    if diaryFile:
-        instream = open(diaryFile, 'r')
+    parser = argparse.ArgumentParser(description='Computes time differences between lines of resman output.\nUsage: Put lines on stdin or in a file whose filename is the first argument.')
+
+    parser.add_argument('diary', type=str, nargs='?',
+                        help='Diary filename to use. If not given, read from stdin.')
+    parser.add_argument('-q', '--quiet', action='store_true',
+                        help='Supress "No file given..." message when reading from stdin.')
+
+    args = parser.parse_args()
+
+    if args.diary:
+        instream = open(args.diary, 'r')
     else:
-        if not quiet:
+        if not args.quiet:
             print('No file given, reading from stdin.')
         instream = sys.stdin
     
@@ -47,15 +55,5 @@ def main(diaryFile=None, quiet=False):
         lastDT = thisDT
 
 
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Computes time differences between lines of resman output.\nUsage: Put lines on stdin or in a file whose filename is the first argument.')
-
-    parser.add_argument('diary', type=str, nargs='?',
-                        help='Diary filename to use. If not given, read from stdin.')
-    parser.add_argument('-q', '--quiet', action='store_true',
-                        help='Supress "No file given..." message when reading from stdin.')
-
-    args = parser.parse_args()
-
-    main(diaryFile=args.diary, quiet=args.quiet)
+if __name__ == '__main__':
+    sys.exit(main())

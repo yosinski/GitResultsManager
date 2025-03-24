@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "GitResultsManager"
+version = "0.5.0"
+authors = [
+  { name="Jason Yosinski", email="git_results_manager.jyo@0sg.net" },
+]
+description = "The GitResultsManager Python module and scripts (resman) for keeping track of research results using Git."
+readme = "README.md"
+requires-python = ">=3.8"
+license = "GPL-3.0-or-later"
+
+[tool.setuptools]
+script-files = ["scripts/rmtd", "scripts/git-recreate"]
+
+[project.urls]
+"Homepage" = "https://github.com/yosinski/GitResultsManager"
+"Bug Tracker" = "https://github.com/yosinski/GitResultsManager/issues"
+
+[project.scripts]
+resman = "GitResultsManager.resman_script:main"
+resman-td = "GitResultsManager.resman_td_script:main"
+

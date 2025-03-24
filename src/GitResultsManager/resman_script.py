@@ -78,8 +78,8 @@ def main():
 
     gitresman.stop(procTime=False)
 
-    sys.exit(exitCode)
+    return exitCode
 
 
-
-main()
+if __name__ == '__main__':
+    sys.exit(main())

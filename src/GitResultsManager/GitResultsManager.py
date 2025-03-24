@@ -13,10 +13,8 @@
 #  The text of the license conditions can be read at
 #  <http://www.gnu.org/licenses/>.
 #
-#  GitResultsManager by by Jason Yosinski <jason@yosinski.com>
-#  Included asyncproc code by Thomas Bellman <bellman@lysator.liu.se>
-
-from __future__ import print_function
+#  GitResultsManager by Jason Yosinski
+#  Included asyncproc code by Thomas Bellman
 
 import os
 import sys
