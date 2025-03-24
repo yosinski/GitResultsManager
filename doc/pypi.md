@@ -24,3 +24,10 @@ How to push a new version to PyPI
   python -m twine upload --repository pypi --verbose --skip-existing dist/*
   ```
 
+* Tag revision and push to Github
+  ```
+  git tag v0.x.y
+  git push origin tag v0.x.y
+  ```
+
+  

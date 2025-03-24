@@ -1,7 +1,5 @@
 #! /usr/bin/env python
 
-from __future__ import print_function
-
 import sys
 from time import sleep
 from GitResultsManager import resman
@@ -18,7 +16,7 @@ def main():
         print('This is logged (to stderr)', ii, file=sys.stderr)
         sleep(1)
     with open(resman.rundir + '/output_file_1.txt', 'w') as ff:
-        ff.write('test output to file in results directory\n')
+        ff.write('test direct output to file in results directory\n')
 
     resman.stop()
 
@@ -26,4 +24,5 @@ def main():
 
 
 
-main()
+if __name__ == '__main__':
+    main()

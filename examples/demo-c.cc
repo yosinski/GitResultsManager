@@ -8,7 +8,7 @@ int main ()
 
     if (pGetResultsManagerDir == NULL) {
         cout << "Environment variable GIT_RESULTS_MANAGER_DIR is undefined. To demonstrate logging, run this instead as" << endl;
-        cout << "    gitresman junk ./demo-c" << endl;;
+        cout << "    resman ./demo-c" << endl;;
     } else {
         printf("The current GIT_RESULTS_MANAGER_DIR is: %s\n", pGetResultsManagerDir);
     }

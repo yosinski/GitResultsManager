@@ -1,14 +1,13 @@
 #! /usr/bin/env python
 
-from __future__ import print_function
-
 from time import sleep
 from datetime import datetime, timedelta
 import random
 import sys
 
+
 def snoozer():
-    print('This program sleeps for deterministic durations, periodically waking up to print the approximate time. Runs until reaching its time limit (3 seconds by default).')
+    print('This program sleeps for deterministic durations, periodically waking up to print the elapsed time. Runs until reaching its time limit (3 seconds by default).')
     
     if len(sys.argv) > 1:
         maxTime = float(sys.argv[1])
@@ -17,11 +16,12 @@ def snoozer():
         
     time = 0.0
     while True:
-        sleep(.3)
+        print(f'Script has run for {time:.1f} seconds.')
         time += .3
-        print(time)
-        sys.stdout.flush()
         if time > maxTime:
             break
+        sleep(.3)
 
-snoozer()
+
+if __name__ == '__main__':
+    snoozer()
