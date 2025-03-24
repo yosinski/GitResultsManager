@@ -17,6 +17,7 @@ def snoozer():
     time = 0.0
     while True:
         print(f'Script has run for {time:.1f} seconds.')
+        sys.stdout.flush()
         time += .3
         if time > maxTime:
             break

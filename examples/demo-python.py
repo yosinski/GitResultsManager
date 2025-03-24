@@ -1,9 +1,7 @@
 #! /usr/bin/env python
 #
 # Run like this:
-# gitresman python demo-python.py
-
-from __future__ import print_function
+# resman demo-python.py
 
 import sys
 import os
@@ -21,7 +19,7 @@ def main():
     try:
         rundir = os.environ['GIT_RESULTS_MANAGER_DIR']
     except KeyError:
-        print('\nEnvironment variable GIT_RESULTS_MANAGER_DIR is undefined. To demonstrate logging, run this instead as\n   gitresman junk ./demo-python.py', file=sys.stderr)
+        print('\nEnvironment variable GIT_RESULTS_MANAGER_DIR is undefined. To demonstrate logging, run this instead as\n   resman ./demo-python.py', file=sys.stderr)
         sys.exit(1)
 
     with open(rundir + '/output_file_1.txt', 'w') as ff:

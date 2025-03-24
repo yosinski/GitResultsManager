@@ -7,7 +7,7 @@ from GitResultsManager import resman
 
 
 def main():
-    print('This is not logged')
+    print('Run about to start (not logged because run has not yet started)')
 
     resman.start('demo-GRM-module-run')
 
@@ -20,7 +20,7 @@ def main():
 
     resman.stop()
 
-    print('Run finished')
+    print('Run finished (not logged because run is over)')
 
 
 
