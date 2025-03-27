@@ -1,7 +1,5 @@
 #! /usr/bin/env python
 
-from __future__ import print_function
-
 import os
 import sys
 import select
@@ -46,7 +44,15 @@ def main():
     # JBY: using universal_newlines=True in py3 proved not to work directly because of this bug or change:
     #  https://bugs.python.org/issue35762
     #proc = subprocess.Popen(args.command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+    #proc = subprocess.Popen(args.command, bufsize=0, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # Without this, Python subprocesses buffer stdout enough that line
+    # timestamps are off by a lot. Adding this environment variable
+    # seems to work well.
+    os.environ["PYTHONUNBUFFERED"] = "1"
     proc = subprocess.Popen(args.command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    #print(f'Stdout is: {proc.stdout}')
+    #print(f'Stderr is: {proc.stderr}')
 
     makeAsync(proc.stdout)
     makeAsync(proc.stderr)
@@ -54,7 +60,9 @@ def main():
     while True:
         try:
             # Wait for data to become available
-            select.select([proc.stdout, proc.stderr], [], [])
+            #print('[RESMAN] waiting on select')
+            out = select.select([proc.stdout, proc.stderr], [], [])
+            #print(f'[RESMAN] select returned {out}')
         except KeyboardInterrupt:
             # Catch Ctrl+C, pass to child, and continue
             proc.send_signal(signal.SIGINT)

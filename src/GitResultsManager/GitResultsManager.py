@@ -58,16 +58,24 @@ def makeAsync(fd):
 # Helper function to read some data from a file descriptor, ignoring EAGAIN errors
 # Python 3 fd's may return bytes instead of str; in this case decode=True may be useful to make readAsync return a str in either case.
 def readAsync(fd, decode=True):
+    dat = None
     try:
         dat = fd.read()
-        if decode and isinstance(dat, bytes):
-            dat = dat.decode()
-        return dat
     except IOError as err:
         if err.errno != errno.EAGAIN:
             raise err
         else:
             return ''
+    except TypeError as err:
+        # TypeError: can't concat NoneType to bytes
+        # Related to https://bugs.python.org/issue35762
+        #         -> https://github.com/python/cpython/issues/57531
+        print(f'Caught and ignored this err: {err}')
+        return ''
+    
+    if decode and isinstance(dat, bytes):
+        dat = dat.decode()
+    return dat
 
 class OutstreamHandler(object):
     def __init__(self, writeHandler, flushHandler):
